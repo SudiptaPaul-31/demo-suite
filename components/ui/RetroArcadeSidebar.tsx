@@ -26,7 +26,7 @@ export default function RetroArcadeSidebar({
   onGameSelect,
   onFullscreenToggle,
 }: RetroArcadeSidebarProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   return (
     <div className='fixed left-4 top-1/2 transform -translate-y-1/2 z-50 hidden lg:block'>
