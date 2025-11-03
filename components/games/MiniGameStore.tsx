@@ -13,6 +13,15 @@ import { UserProfile } from '@/components/ui/navigation/UserProfile';
 import { AccountStatusIndicator } from '@/components/ui/AccountStatusIndicator';
 import { LeaderboardSection } from '@/components/home/LeaderboardSection';
 import { LeaderboardSidebar } from '@/components/ui/LeaderboardSidebar';
+import {
+  PROMOTIONAL_BANNERS,
+  GAME_CATEGORIES,
+  MINI_GAMES,
+  GAME_DISPLAY_CONFIG,
+  DONATION_SOCIAL_LINKS,
+  getProgressColor,
+  getDifficultyColor,
+} from '@/utils/constants';
 import Image from 'next/image';
 
 export default function MiniGameStore() {
@@ -20,73 +29,15 @@ export default function MiniGameStore() {
   const { account, isLoading: firebaseLoading, isInitialized } = useFirebase();
   const { addToast } = useToast();
   const [activePromo, setActivePromo] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>(GAME_DISPLAY_CONFIG.DEFAULT_CATEGORY);
+  const [searchQuery, setSearchQuery] = useState<string>(GAME_DISPLAY_CONFIG.DEFAULT_SEARCH_QUERY);
   const [showDonationModal, setShowDonationModal] = useState<string | null>(null);
   const [hoveredGame, setHoveredGame] = useState<string | null>(null);
-  const [gamesPerPage, setGamesPerPage] = useState(4);
+  const [gamesPerPage, setGamesPerPage] = useState<number>(GAME_DISPLAY_CONFIG.INITIAL_GAMES_PER_PAGE);
   const [walletSidebarOpen, setWalletSidebarOpen] = useState(false);
   const [walletExpanded, setWalletExpanded] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [leaderboardSidebarOpen, setLeaderboardSidebarOpen] = useState(false);
-
-  // Epic promotional banners
-  const promotionalBanners = [
-    {
-      id: 1,
-      title: '🚀 WEB3 LEARNING REVOLUTION',
-      subtitle: 'Learn blockchain while earning rewards',
-      description: 'Master smart contracts, earn crypto, and build the future',
-      image: '/images/banner/web3-learning.png',
-      gradient: 'from-purple-600 via-pink-600 to-orange-600',
-      cta: 'Start Learning Now',
-      badge: '🔥 HOT',
-      players: '2,847 Active Learners',
-    },
-    {
-      id: 2,
-      title: '🏆 DAILY CONTESTS & PRIZES',
-      subtitle: 'Compete with developers worldwide',
-      description: 'Win XLM, NFTs, and exclusive web3 opportunities',
-      image: '/images/banner/daily-contest.png',
-      gradient: 'from-blue-600 via-cyan-600 to-teal-600',
-      cta: 'Join Contest',
-      badge: '⚡ LIVE',
-      players: '1,234 Contestants',
-    },
-    {
-      id: 3,
-      title: '🎯 SECRET MISSIONS UNLOCKED',
-      subtitle: 'Hidden challenges await',
-      description: 'Discover secret quests and earn legendary rewards',
-      image: '/images/banner/secret-missions.png',
-      gradient: 'from-green-600 via-emerald-600 to-teal-600',
-      cta: 'Explore Missions',
-      badge: '🌟 NEW',
-      players: '567 Mission Hunters',
-    },
-    {
-      id: 4,
-      title: '🌟 FEATURED GAME OF THE WEEK 🌟',
-      subtitle: 'NEXUS Web3 Infinite Runner',
-      description:
-        'Master blockchain fundamentals through interactive gameplay!',
-      image: '/videos/infinite-runner.mp4',
-      gradient: 'from-yellow-500 via-orange-500 to-red-500',
-      cta: 'Play Now',
-      badge: '⭐ FEATURED',
-      // players: '1,247 Active Players',
-    },
-  ];
-
-  // Enhanced game categories
-  const categories = [
-    { id: 'all', name: '🎮 All Games', count: 8 },
-    { id: 'available', name: '✅ Available', count: 3 },
-    { id: 'beta', name: '🧪 Beta', count: 2 },
-    { id: 'development', name: '🚧 In Development', count: 2 },
-    { id: 'coming-soon', name: '⏳ Coming Soon', count: 1 },
-  ];
 
   // Listen for wallet sidebar state changes
   useEffect(() => {
@@ -118,204 +69,13 @@ export default function MiniGameStore() {
     };
   }, []);
 
-  // Enhanced mini games with epic descriptions and thumbnails
-  const miniGames = [
-    {
-      id: 'web3-basics-adventure',
-      title: 'Web3 Basics Adventure | NEXUS Infinite Runner',
-      description:
-        'Embark on an epic journey through blockchain fundamentals. Learn smart contracts, wallets, and DeFi while earning crypto rewards!',
-      shortDescription: 'Master blockchain basics through interactive gameplay',
-      icon: '🌐',
-      status: 'beta', // available
-      category: 'learning',
-      difficulty: 'Beginner',
-      estimatedTime: 'NEXUS Web3 Infinite Runner',
-      rewards: '50 XLM + NFT Badge',
-      // currentPlayers: 1247,
-      rating: 4.8,
-      thumbnail: '/images/games/infinite-runner.png',
-      progress: 20,
-      estimatedRelease: 'Available Now',
-      donationGoal: 0,
-      currentDonations: 0,
-      features: [
-        'Smart Contract Basics',
-        'Wallet Security',
-        'DeFi Fundamentals',
-        'Interactive Quests',
-      ],
-      achievements: [
-        'First Transaction',
-        'Smart Contract Master',
-        'DeFi Explorer',
-        'Blockchain Pioneer',
-      ],
-    },
-    {
-      id: 'escrow-puzzle-master',
-      title: 'Escrow Puzzle Master',
-      description:
-        'Solve complex escrow puzzles while learning Stellar blockchain fundamentals. Complete challenges, unlock achievements, and become a DeFi expert!',
-      shortDescription: 'Master the Art of Trustless Transactions',
-      icon: '⭐',
-      status: 'development',
-      category: 'blockchain',
-      difficulty: 'Intermediate',
-      estimatedTime: '4-5 hours',
-      rewards: '100 XLM + Expert Badge',
-      currentPlayers: 0,
-      rating: 0,
-      thumbnail: '/images/games/blank.png',
-      progress: 0,
-      estimatedRelease: 'TBA',
-      donationGoal: 15000,
-      currentDonations: 0,
-      features: [
-        'Escrow Systems',
-        'Multi-Sig Wallets',
-        'Trustless Transactions',
-        'Stellar Network',
-      ],
-      achievements: ['Escrow Master', 'Trust Guardian', 'Stellar Expert', 'Security Champion'],
-    },
-    {
-      id: 'defi-trading-arena',
-      title: 'DeFi Trading Arena',
-      description:
-        'Enter the competitive world of DeFi trading! Learn liquidity pools, yield farming, and automated market making while competing for top rankings.',
-      shortDescription: 'Compete in DeFi trading challenges',
-      icon: '📈',
-      status: 'development',
-      category: 'defi',
-      difficulty: 'Advanced',
-      estimatedTime: '6-8 hours',
-      rewards: '200 XLM + Trading Trophy',
-      currentPlayers: 0,
-      rating: 0,
-      thumbnail: '/images/games/blank.png',
-      progress: 0,
-      estimatedRelease: 'TBA',
-      donationGoal: 15000,
-      currentDonations: 0,
-      features: ['Liquidity Pools', 'Yield Farming', 'AMM Strategies', 'Risk Management'],
-      achievements: ['Trading Champion', 'Yield Master', 'Risk Taker', 'DeFi Legend'],
-    },
-    {
-      id: 'nft-creation',
-      title: 'NFT Creation Studio',
-      description:
-        'Unleash your creativity in the NFT universe! Design, mint, and trade unique digital assets while learning the art of digital ownership.',
-      shortDescription: 'Create and trade unique NFTs',
-      icon: '🎨',
-      status: 'development',
-      category: 'nft',
-      difficulty: 'Intermediate',
-      estimatedTime: '3-4 hours',
-      rewards: '75 XLM + Creator Badge',
-      currentPlayers: 0,
-      rating: 0,
-      thumbnail: '/images/games/blank.png',
-      progress: 0,
-      estimatedRelease: 'TBA',
-      donationGoal: 15000,
-      currentDonations: 0,
-      features: ['NFT Design Tools', 'Minting Process', 'Marketplace Trading', 'Royalty Systems'],
-      achievements: ['Creative Genius', 'NFT Pioneer', 'Market Master', 'Digital Artist'],
-    },
-    // {
-    //   id: 'dao-governance',
-    //   title: 'DAO Governance Simulator',
-    //   description: 'Experience the future of decentralized governance! Participate in DAO voting, proposal creation, and community decision-making.',
-    //   shortDescription: 'Learn DAO governance and voting systems',
-    //   icon: '🗳️',
-    //   status: 'development',
-    //   category: 'governance',
-    //   difficulty: 'Intermediate',
-    //   estimatedTime: '5-6 hours',
-    //   rewards: '150 XLM + Governance Badge',
-    //   currentPlayers: 0,
-    //   rating: 0,
-    //   thumbnail: '/images/games/blank.png',
-    //   progress: 45,
-    //   estimatedRelease: 'Q2 2024',
-    //   donationGoal: 8000,
-    //   currentDonations: 4500,
-    //   features: ['Voting Mechanisms', 'Proposal Creation', 'Treasury Management', 'Community Building'],
-    //   achievements: ['Governance Expert', 'Proposal Master', 'Community Leader', 'DAO Architect']
-    // },
-    // {
-    //   id: 'cross-chain-bridge',
-    //   title: 'Cross-Chain Bridge Explorer',
-    //   description: 'Master the art of cross-chain interoperability! Learn bridge protocols, asset transfers, and multi-chain DeFi strategies.',
-    //   shortDescription: 'Explore cross-chain bridge technologies',
-    //   icon: '🌉',
-    //   status: 'development',
-    //   category: 'interoperability',
-    //   difficulty: 'Advanced',
-    //   estimatedTime: '7-9 hours',
-    //   rewards: '300 XLM + Bridge Master Badge',
-    //   currentPlayers: 0,
-    //   rating: 0,
-    //   thumbnail: '/images/games/blank.png',
-    //   progress: 30,
-    //   estimatedRelease: 'Q3 2024',
-    //   donationGoal: 12000,
-    //   currentDonations: 2800,
-    //   features: ['Bridge Protocols', 'Asset Transfers', 'Security Audits', 'Multi-Chain DeFi'],
-    //   achievements: ['Bridge Master', 'Interoperability Expert', 'Security Guardian', 'Chain Hopper']
-    // },
-    // {
-    //   id: 'metaverse-builder',
-    //   title: 'Metaverse Builder World',
-    //   description: 'Build your own metaverse! Create 3D worlds, virtual assets, and immersive experiences using web3 technology.',
-    //   shortDescription: 'Build immersive 3D metaverse worlds',
-    //   icon: '🌍',
-    //   status: 'coming-soon',
-    //   category: 'metaverse',
-    //   difficulty: 'Expert',
-    //   estimatedTime: '10-12 hours',
-    //   rewards: '500 XLM + Metaverse Creator Badge',
-    //   currentPlayers: 0,
-    //   rating: 0,
-    //   thumbnail: '/images/games/blank.png',
-    //   progress: 15,
-    //   estimatedRelease: 'Q4 2024',
-    //   donationGoal: 20000,
-    //   currentDonations: 1200,
-    //   features: ['3D World Building', 'Virtual Asset Creation', 'VR Integration', 'Social Interactions'],
-    //   achievements: ['World Builder', 'Asset Creator', 'VR Pioneer', 'Metaverse Legend']
-    // },
-    // {
-    //   id: 'ai-web3-fusion',
-    //   title: 'AI + Web3 Fusion Lab',
-    //   description: 'Explore the cutting edge of AI and blockchain integration! Learn how AI enhances smart contracts, DeFi, and decentralized applications.',
-    //   shortDescription: 'Fuse AI with blockchain technology',
-    //   icon: '🤖',
-    //   status: 'coming-soon',
-    //   category: 'ai',
-    //   difficulty: 'Expert',
-    //   estimatedTime: '8-10 hours',
-    //   rewards: '400 XLM + AI Pioneer Badge',
-    //   currentPlayers: 0,
-    //   rating: 0,
-    //   thumbnail: '/images/games/blank.png',
-    //   progress: 5,
-    //   estimatedRelease: 'Q1 2025',
-    //   donationGoal: 25000,
-    //   currentDonations: 800,
-    //   features: ['AI-Enhanced Smart Contracts', 'Predictive DeFi', 'Decentralized AI', 'Automated Trading'],
-    //   achievements: ['AI Pioneer', 'Smart Contract Master', 'DeFi Innovator', 'Future Builder']
-    // }
-  ];
-
   // Auto-rotate promotional banners
   useEffect(() => {
     const interval = setInterval(() => {
-      setActivePromo(prev => (prev + 1) % promotionalBanners.length);
-    }, 5000);
+      setActivePromo(prev => (prev + 1) % PROMOTIONAL_BANNERS.length);
+    }, GAME_DISPLAY_CONFIG.PROMO_ROTATION_INTERVAL);
     return () => clearInterval(interval);
-  }, [promotionalBanners.length]);
+  }, []);
 
   const handlePlayGame = (game: any) => {
     // Navigate to the individual game page
@@ -330,7 +90,7 @@ export default function MiniGameStore() {
     setShowDonationModal(null);
   };
 
-  const filteredGames = miniGames.filter(game => {
+  const filteredGames = MINI_GAMES.filter(game => {
     const matchesSearch =
       game.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       game.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -345,33 +105,11 @@ export default function MiniGameStore() {
 
   // Reset pagination when filters change
   useEffect(() => {
-    setGamesPerPage(4);
+    setGamesPerPage(GAME_DISPLAY_CONFIG.INITIAL_GAMES_PER_PAGE);
   }, [selectedCategory, searchQuery]);
 
   const loadMoreGames = () => {
-    setGamesPerPage(prev => prev + 4);
-  };
-
-  const getProgressColor = (progress: number) => {
-    if (progress >= 80) return 'from-green-500 to-emerald-500';
-    if (progress >= 60) return 'from-yellow-500 to-orange-500';
-    if (progress >= 40) return 'from-orange-500 to-red-500';
-    return 'from-red-500 to-pink-500';
-  };
-
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Beginner':
-        return 'from-green-500 to-emerald-500';
-      case 'Intermediate':
-        return 'from-blue-500 to-cyan-500';
-      case 'Advanced':
-        return 'from-purple-500 to-pink-500';
-      case 'Expert':
-        return 'from-red-500 to-orange-500';
-      default:
-        return 'from-gray-500 to-slate-500';
-    }
+    setGamesPerPage(prev => prev + Number(GAME_DISPLAY_CONFIG.LOAD_MORE_INCREMENT));
   };
 
   return (
@@ -722,7 +460,7 @@ export default function MiniGameStore() {
 
                     {/* Category Filters */}
                     <div className='flex flex-wrap justify-center gap-3'>
-                      {categories.map(category => (
+                      {GAME_CATEGORIES.map(category => (
                         <button
                           key={category.id}
                           onClick={() => setSelectedCategory(category.id)}
@@ -971,7 +709,7 @@ export default function MiniGameStore() {
               {/* Epic Promotional Banner Carousel */}
               <div id='news-banner-carousel' className='relative'>
                 <div className='relative h-96 rounded-3xl overflow-hidden shadow-2xl'>
-                  {promotionalBanners.map((banner, index) => (
+                  {PROMOTIONAL_BANNERS.map((banner, index) => (
                     <div
                       key={banner.id}
                       className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
@@ -1045,7 +783,7 @@ export default function MiniGameStore() {
 
                   {/* Navigation Dots */}
                   <div className='absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3'>
-                    {promotionalBanners.map((_, index) => (
+                    {PROMOTIONAL_BANNERS.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setActivePromo(index)}
@@ -1122,7 +860,7 @@ export default function MiniGameStore() {
 
               {/* Game Info Section */}
               {(() => {
-                const game = miniGames.find(g => g.id === showDonationModal);
+                const game = MINI_GAMES.find(g => g.id === showDonationModal);
                 if (!game) return null;
                 const donationProgress = (game.currentDonations / game.donationGoal) * 100;
                 return (
@@ -1195,7 +933,7 @@ export default function MiniGameStore() {
                   </p>
                   <div className='flex gap-3'>
                     <a
-                      href='https://t.me/josegomezdev'
+                      href={DONATION_SOCIAL_LINKS.TELEGRAM}
                       target='_blank'
                       rel='noopener noreferrer'
                       className='flex-1 py-3 px-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2'
@@ -1204,7 +942,7 @@ export default function MiniGameStore() {
                       <span>Telegram</span>
                     </a>
                     <a
-                      href='https://discord.gg/y8jADgKK'
+                      href={DONATION_SOCIAL_LINKS.DISCORD}
                       target='_blank'
                       rel='noopener noreferrer'
                       className='flex-1 py-3 px-4 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2'

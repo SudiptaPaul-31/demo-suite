@@ -22,6 +22,9 @@ export * from './badges';
 // Mock Data Constants
 export * from './mock-data';
 
+// Games Constants
+export * from './games';
+
 // Re-export commonly used constants for convenience
 export { API_ENDPOINTS, API_TIMEOUTS, API_RETRY } from './api/endpoints';
 export { NETWORKS, NETWORK_CONFIGS, DEFAULT_NETWORK } from './network/stellar';
@@ -30,3 +33,14 @@ export { UI_CONSTANTS, TOAST_CONFIG, MODAL_CONFIG } from './ui/config';
 export { ANIMATION_CONSTANTS } from './animations/config';
 export { AVAILABLE_BADGES, RARITY_STYLES, BADGE_POINTS } from './badges/config';
 export { MOCK_DATA, MOCK_API_RESPONSES, MOCK_DELAYS } from './mock-data/constants';
+export {
+  PROMOTIONAL_BANNERS,
+  GAME_CATEGORIES,
+  MINI_GAMES,
+  GAME_DISPLAY_CONFIG,
+  GAME_COLORS,
+  DONATION_SOCIAL_LINKS,
+  getProgressColor,
+  getDifficultyColor,
+  getStatusColor,
+} from './games/constants';
