@@ -243,11 +243,6 @@ export const RewardsSidebar: React.FC<RewardsDropdownProps> = ({ isOpen, onClose
                 />
               )}
 
-              {/* Phase Badge - Changes with arrow navigation */}
-              <div className='absolute -top-6 -right-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-sm font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white/20 transition-all duration-300'>
-                {currentPhase?.name || 'Trustless Scout'}
-              </div>
-
               {/* Phase Indicator */}
               {availablePhases.length > 1 && (
                 <div className='absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-sm rounded-full px-2 py-1 border border-white/20'>
@@ -299,9 +294,9 @@ export const RewardsSidebar: React.FC<RewardsDropdownProps> = ({ isOpen, onClose
           </div>
 
           {/* Level Progress Info */}
-          <div className='flex-1 min-w-0'>
+          <div className='flex-1 min-w-0 text-center'>
             <div className='mb-4'>
-              <h3 className='text-2xl font-bold text-white mb-1'>Lvl: {level}</h3>
+              <h3 className='text-xl font-bold text-white mb-1'>Lvl: {level}</h3>
               <p className='text-sm text-gray-300'>
                 {expProgress.current} / {expProgress.next} XP
               </p>
